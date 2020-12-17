@@ -13,27 +13,40 @@
                         {
                             "type": "base-graphics",
                             "components": [
-                                {"type":"Circle","description":"圆/椭圆"},
-                                {"type":"Rect","description":"矩形"}
+                                {
+                                    "type": "Rect",
+                                    "description": "矩形",
+                                    "title":"矩形[R]"
+                                },
+                                {
+                                    "type": "Circle",
+                                    "description": "圆/椭圆",
+                                    "title":"圆/椭圆[C]"
+                                }
                             ],
                             "description": "基础图形",
-                            "container":"BasGraphics"
+                            "container": "BasGraphics"
                         },
                         {
                             "type": "advanced-graphics",
-                            "components": [],
+                            "components": [
+                                {
+                                    "type": "RealLine",
+                                    "description": "实时曲线",
+                                    "title":""
+                                }],
                             "description": "高级图形",
-                            "container":"AdvanceGraphics"
+                            "container": "AdvanceGraphics"
                         }
                     ],
                     "description": "图形",
-                    "container":"Graphics"
+                    "container": "Graphics"
                 },
                 {
                     "type": "",
                     "components": [],
                     "description": "图库",
-                    "container":"GraphicsLib"
+                    "container": "GraphicsLib"
                 }
             ]
         },
