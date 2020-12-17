@@ -1,0 +1,53 @@
+{
+    "view-config": [
+        {
+            "area": "top",
+            "views-info": []
+        },
+        {
+            "area": "left",
+            "views-info": [
+                {
+                    "type": "",
+                    "components": [
+                        {
+                            "type": "base-graphics",
+                            "components": [
+                                {"type":"Circle","description":"圆/椭圆"},
+                                {"type":"Rect","description":"矩形"}
+                            ],
+                            "description": "基础图形",
+                            "container":"BasGraphics"
+                        },
+                        {
+                            "type": "advanced-graphics",
+                            "components": [],
+                            "description": "高级图形",
+                            "container":"AdvanceGraphics"
+                        }
+                    ],
+                    "description": "图形",
+                    "container":"Graphics"
+                },
+                {
+                    "type": "",
+                    "components": [],
+                    "description": "图库",
+                    "container":"GraphicsLib"
+                }
+            ]
+        },
+        {
+            "area": "center",
+            "views-info": []
+        },
+        {
+            "area": "right",
+            "views-info": []
+        },
+        {
+            "area": "bottom",
+            "views-info": []
+        }
+    ]
+}
