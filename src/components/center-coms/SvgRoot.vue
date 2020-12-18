@@ -19,7 +19,6 @@
       :y="content_y"
       overflow="hidden"
       xmlns="http://www.w3.org/2000/svg"
-      xmlns:se="http://svg-edit.googlecode.com"
       xmlns:xlink="http://www.w3.org/1999/xlink"
       viewBox="0 0 800 600"
     >
@@ -38,15 +37,24 @@
       </g>
       <g class="layer" style="pointer-events: all">
         <title style="pointer-events: inherit">Layer 1</title>
+        <component
+          v-for="(svg, index) in activeComs"
+          :key="index"
+          :is="svg"
+        ></component>
       </g>
     </svg>
   </svg>
 </template>
 <script>
+import { mapState } from "vuex";
+//import Model from "../../common/enum/model.js";
 export default {
   name: "svgroot-com",
   data() {
     return {
+      activeComs: [],
+      nextId: 0,
     };
   },
   props: {
@@ -66,7 +74,7 @@ export default {
       type: Number,
       default: 600,
     },
-     content_x: {
+    content_x: {
       type: Number,
       default: 0,
     },
@@ -75,9 +83,21 @@ export default {
       default: 0,
     },
   },
-  computed: {
+  methods: {
+    getCom() {
+      if (this.activeVue) {
+        this.activeVue.forEach((vue) => {
+          if (vue.type === this.graphyType) {
+            this.activeComs.push(vue.com);
+          }
+        });
+      }
+    },
   },
-
+  computed: {
+    ...mapState(["model", "graphyType", "activeVue"]), //根据activeVue[]和当前选中的graphyType,获取组件,并往activeComs[]即可
+  },
+  watch: {},
 };
 </script>
 <style scoped>

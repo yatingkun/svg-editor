@@ -2,9 +2,6 @@
   <div class="container-fluid" style="height: 100%">
     <header class="row"></header>
     <section class="row" id="main_body">
-      <!-- <div id="left" class="col-1">
-
-      </div> -->
       <left-com id="left" class="col-2"></left-com>
       <div id="svg_editor" class="col-8" style="position: relative">
         <ruler-com></ruler-com>
@@ -55,7 +52,7 @@ export default {
       setTimeout(() => {
         this.height = document.getElementById("svg_editor").offsetHeight;
       }, 10); //如果不延迟，此时无内容，高度为0。//是否有更好的加载方法？
-    }
+    },
   },
   mounted() {
     this.initEditorArea();

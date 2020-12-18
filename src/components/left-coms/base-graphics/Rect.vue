@@ -12,11 +12,12 @@
     :skewY="skewX"
     :rx="rx"
     :ry="ry"
+    :x="x"
+    :y="y"
   />
 </template>
 <script>
 export default {
-  name: "Rect",
   data() {
     return {};
   },
@@ -64,6 +65,18 @@ export default {
     ry: {
       type: Number,
       default: 0,
+    },
+    fill:{
+      type: String,
+      default: "blue",
+    },
+     x: {
+      type: Number,
+      default: 300,
+    },
+    y: {
+      type: Number,
+      default: 100,
     },
   },
 };

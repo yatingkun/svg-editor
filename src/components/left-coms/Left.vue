@@ -13,7 +13,10 @@
         :key="index"
         :active="index === 0"
       >
-        <component :is="registedComs[item.container].com" :infos="registedComs[item.container].infos"></component>
+        <component
+          :is="registedComs[item.container].com"
+          :infos="registedComs[item.container].infos"
+        ></component>
       </b-tab>
     </b-tabs>
   </div>
@@ -38,12 +41,25 @@ export default {
           this.config.forEach((item) => {
             let dir = item.type === "" ? "./" : "item.type"; //如果type为空,则在同级目录
             if (item.container) {
-              let com = () => import(`${dir}${item.container}.vue`); //动态添加容器
-              if (com) {
+              let com = () => import(`${dir}${item.container}.vue`); //添加组件的容器，具体到哪个组件需要添加是在Graphics.vue
+              if (com && item.components) {
                 this.registedComs[item.container] = {
                   com: com,
                   infos: item.components,
                 };
+                item.components.forEach((activeComsInfo) => {
+                  activeComsInfo.components.forEach((comInfo) => {
+                    let activedCom = () =>
+                      import(`./${activeComsInfo.type}/${comInfo.type}.vue`);
+                    if (activedCom) {
+                      let parame={
+                        "com":activedCom,
+                        "type":comInfo.type
+                      }
+                      this.$store.commit("addActiveVue", parame); //组册能画在画布上的组件
+                    }
+                  });
+                });
               }
             }
           });

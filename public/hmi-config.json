@@ -19,7 +19,7 @@
                                     "title":"矩形[R]"
                                 },
                                 {
-                                    "type": "Circle",
+                                    "type": "Ellipse",
                                     "description": "圆/椭圆",
                                     "title":"圆/椭圆[C]"
                                 }
@@ -30,11 +30,7 @@
                         {
                             "type": "advanced-graphics",
                             "components": [
-                                {
-                                    "type": "RealLine",
-                                    "description": "实时曲线",
-                                    "title":""
-                                }],
+                                ],
                             "description": "高级图形",
                             "container": "AdvanceGraphics"
                         }

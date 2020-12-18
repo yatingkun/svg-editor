@@ -1,15 +1,9 @@
 <template>
-  <rect
+  <ellipse
     :width="width"
     :height="height"
     :fill="fill"
     :stroke-width="strokeWidth"
-    :stroke="stroke"
-    :translate="translate"
-    :scale="scale"
-    :rotate="rotate"
-    :skewX="skewX"
-    :skewY="skewX"
     :cx="cx"
     :cy="cy"
     :rx="rx"
@@ -18,18 +12,17 @@
 </template>
 <script>
 export default {
-  name: "Rect",
   data() {
     return {};
   },
   props: {
     width: {
       type: Number,
-      default: 0,
+      default: 100,
     },
     height: {
       type: Number,
-      default: 0,
+      default: 100,
     },
     strokeWidth: {
       type: Number,
@@ -61,20 +54,24 @@ export default {
     },
     cx: {
       type: Number,
-      default: 0,
+      default: 200,
     },
     cy: {
       type: Number,
-      default: 0,
+      default: 200,
     },
     rx: {
       type: Number,
-      default: 0,
+      default: 100,
     },
     ry: {
       type: Number,
-      default: 0,
+      default: 100,
     },
+    fill: {
+      type: String,
+      default: "red",
+    }
   },
 };
 </script>

@@ -12,7 +12,7 @@
         role="tabpanel"
       >
         <b-card-body>
-            <button class="tool_button" v-for="(com,index) in item.components" :key="index" :id="com.type" :title="com.title">
+            <button class="tool_button" v-for="(com,index) in item.components" :key="index" :id="com.type" :title="com.title" @click.stop="graphySelect(com.type)">
                  <i class="iconfont icon_style iconrealLineChar"></i>
                 <span>{{com.description}}</span>
             </button>
@@ -27,6 +27,7 @@ export default {
   name: "Graphics",
   data() {
     return {
+      
     };
   },
   props: {
@@ -41,6 +42,9 @@ export default {
     graph_click(index) {
        this.$children[index].show = !this.$children[index].show;
     },
+    graphySelect(comType){
+      this.$store.commit("graphySelect",comType);//
+    }
   },
   mounted() {
   },
