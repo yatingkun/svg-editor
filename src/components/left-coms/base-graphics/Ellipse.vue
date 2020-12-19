@@ -8,14 +8,24 @@
     :cy="cy"
     :rx="rx"
     :ry="ry"
+    :id="id"
   />
 </template>
 <script>
 export default {
   data() {
-    return {};
+    return {
+      cx: 0,
+      cy: 0,
+      rx: 0,
+      ry: 0,
+    };
   },
   props: {
+    id: {
+      type: String,
+      default: "",
+    },
     width: {
       type: Number,
       default: 100,
@@ -52,26 +62,17 @@ export default {
       type: Number,
       default: 0,
     },
-    cx: {
-      type: Number,
-      default: 200,
-    },
-    cy: {
-      type: Number,
-      default: 200,
-    },
-    rx: {
-      type: Number,
-      default: 100,
-    },
-    ry: {
-      type: Number,
-      default: 100,
-    },
+
     fill: {
       type: String,
       default: "red",
-    }
+    },
+  },
+  methods: {
+    initPosition(pt) {
+      this.cx = pt.x;
+      this.cy = pt.y;
+    },
   },
 };
 </script>

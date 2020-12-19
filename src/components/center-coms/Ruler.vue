@@ -246,9 +246,9 @@ export default {
   margin-left: -16px;
 } 
 
-/* #ruler_x canvas {
+#ruler_x canvas {
   float: left;
-} */
+}
 
 #ruler_y canvas {
   margin-top: -1px;

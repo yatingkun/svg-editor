@@ -6,9 +6,9 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
     state: {
         left: [],//左侧视图配置
-        model:null,//当前的操作模式
-        graphyType:"Rect",//鼠标选中的图形组件
-        activeVue:[],//可用于画布画图的vue组件
+        model: Model.none,//当前的操作模式
+        graphyType: null,//鼠标选中的图形组件
+        activeVue: [],//可用于画布画图的vue组件
 
     },
     mutations: {
@@ -23,14 +23,17 @@ const store = new Vuex.Store({
                     }
                 });
             }
-            state.model=Model.none;//设置模式为none
+            state.model = Model.none;//设置模式为none
         },
-        graphySelect(state,graphyType){
-            state.model=Model.select
-            state.graphyType=graphyType;
+        graphySelect(state, graphyType) {
+            state.model = Model.select
+            state.graphyType = graphyType;
         },
-        addActiveVue(state,com){
+        addActiveVue(state, com) {
             state.activeVue.push(com);
+        },
+        setModel(state, model) {
+            state.model = model;
         }
     },
     actions: {
@@ -41,7 +44,15 @@ const store = new Vuex.Store({
         }
     },
     getters: {
-
+        currentVue: function (state) {
+            if (!state.graphyType)
+                return null;
+            let current = state.activeVue.filter(vue => vue.type === state.graphyType);
+            if (current && state.model === Model.select) {
+                return current[0];
+            }
+            return null;
+        }
     }
 })
 export default store;

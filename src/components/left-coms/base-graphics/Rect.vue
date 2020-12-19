@@ -3,15 +3,9 @@
     :width="width"
     :height="height"
     :fill="fill"
-    :stroke-width="strokeWidth"
-    :stroke="stroke"
-    :translate="translate"
-    :scale="scale"
-    :rotate="rotate"
-    :skewX="skewX"
-    :skewY="skewX"
     :rx="rx"
     :ry="ry"
+    :id="id"
     :x="x"
     :y="y"
   />
@@ -19,66 +13,47 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+      fill: "blue",
+      rx: 0,
+      ry: 0,
+      strokeWidth: 1,
+      stroke: "",
+      translate: "",
+      scale: "",
+      rotate: 0,
+      skewX: 0,
+      skewY: 0,
+    };
   },
   props: {
-    width: {
-      type: Number,
-      default: 100,
-    },
-    height: {
-      type: Number,
-      default: 100,
-    },
-    strokeWidth: {
-      type: Number,
-      default: 1,
-    },
-    stroke: {
+    id: {
       type: String,
       default: "",
     },
-    translate: {
-      type: String,
-      default: "",
-    },
-    scale: {
-      type: String,
-      default: "",
-    },
-    rotate: {
-      type: String,
-      default: "",
-    },
-    skewX: {
+    index: {
       type: Number,
       default: 0,
-    },
-    skewY: {
-      type: Number,
-      default: 0,
-    },
-    rx: {
-      type: Number,
-      default: 0,
-    },
-    ry: {
-      type: Number,
-      default: 0,
-    },
-    fill:{
-      type: String,
-      default: "blue",
-    },
-     x: {
-      type: Number,
-      default: 300,
-    },
-    y: {
-      type: Number,
-      default: 100,
     },
   },
+  methods: {
+    initPosition(pt) {
+      this.x = pt.x;
+      this.y = pt.y;
+    },
+    abledDelete() {
+      return this.width === 0 || this.height === 0;
+    },
+    mouseMove(pt){
+      this.width=Math.abs(pt.x-this.x);
+      this.height=Math.abs(pt.y-this.y);
+    }
+  },
+  watch: {},
 };
 </script>
 <style scoped>

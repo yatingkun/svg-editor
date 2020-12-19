@@ -50,13 +50,13 @@ export default {
                 item.components.forEach((activeComsInfo) => {
                   activeComsInfo.components.forEach((comInfo) => {
                     let activedCom = () =>
-                      import(`./${activeComsInfo.type}/${comInfo.type}.vue`);
+                      import(`./${activeComsInfo.type}/${comInfo.type}.vue`);//组册能画在画布上的组件
                     if (activedCom) {
                       let parame={
                         "com":activedCom,
                         "type":comInfo.type
                       }
-                      this.$store.commit("addActiveVue", parame); //组册能画在画布上的组件
+                      this.$store.commit("addActiveVue", parame); //通知全局状态管理者添加到集合
                     }
                   });
                 });
