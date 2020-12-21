@@ -8,6 +8,7 @@
     :id="id"
     :x="x"
     :y="y"
+    :stroke="stroke"
   />
 </template>
 <script>
@@ -18,11 +19,11 @@ export default {
       y: 0,
       width: 0,
       height: 0,
-      fill: "blue",
+      fill: "#fff",
       rx: 0,
       ry: 0,
-      strokeWidth: 1,
-      stroke: "",
+      strokeWidth: 1.5,
+      stroke: "black",
       translate: "",
       scale: "",
       rotate: 0,

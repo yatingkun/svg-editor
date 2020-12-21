@@ -44,6 +44,7 @@
           ref="svgComs"
         ></component>
       </g>
+      <selector-com></selector-com>
     </svg>
   </svg>
 </template>
@@ -51,6 +52,7 @@
 import { mapState, mapGetters } from "vuex";
 import Model from "../../common/enum/model.js";
 import Methods from "../../common/Helper/Math.js";
+import Selector from './Selector/Selector.vue';
 export default {
   name: "svgroot-com",
   data() {
@@ -60,7 +62,9 @@ export default {
       currentDomCom: null, //当前已挂载到dom上的vue实例
     };
   },
-  components: {},
+  components: {
+    "selector-com":Selector
+  },
   props: {
     root_w: {
       type: Number,
@@ -106,7 +110,7 @@ export default {
               }
             });
             if (this.currentDomCom && result) {
-              if (!Methods.checkMethods(this.currentDomCom, this.graphyType)) {
+              if (!Methods.checkMethods(this.currentDomCom, this.graphyType)) {//校验这个组件是否实现了所需要的方法
                 if (typeof this.currentIndex !== "undefined") {
                   this.activeComs.splice(this.currentIndex, 1);
                 }

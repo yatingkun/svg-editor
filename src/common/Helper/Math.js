@@ -16,7 +16,7 @@ class Methods {
         for (let i = 0; i < 5; i++) n += t.charAt(Math.floor(Math.random() * a));
         return n;
     }
-    static checkMethods(vue,type) {
+    static checkMethods(vue, type) {
         let result = true;
         const methodsName = ["initPosition", "abledDelete", "mouseMove"]
         methodsName.forEach(methodName => {
@@ -27,5 +27,54 @@ class Methods {
         });
         return result;
     }
+    /**
+* Check if two rectangles (BBoxes objects) intersect each other.
+* @function getIntersectionList
+* @param {SVGRect}rect - 鼠标选中空白区域拖动时产生的矩形
+* @param {SVGRect}svgcontent - 画布区域（id为svgcontent的svg）
+* @param {Element[]}curBBoxes - 画布中可见的svg元素
+* @returns {Element[]}
+*/
+    static getIntersectionList = function (rect, svgcontent, curBBoxes) {
+        if (!rect) {
+            return null;
+        }
+
+        let rubberBBox;
+        rubberBBox = svgcontent.createSVGRect();
+        rubberBBox.x = rect.x;
+        rubberBBox.y = rect.y;
+        rubberBBox.width = rect.width;
+        rubberBBox.height = rect.height;
+
+        let resultList = null;
+        if (!resultList || typeof resultList.item !== 'function') {
+            resultList = [];
+
+            let i = curBBoxes.length;
+            while (i--) {
+                if (!rubberBBox.width) {
+                    continue;
+                }
+                if (Methods.rectsIntersect(rubberBBox, curBBoxes[i].bbox)) {
+                    resultList.push(curBBoxes[i]);
+                }
+            }
+        }
+        return resultList;
+    };
+    /**
+ * 检查两个元素是否相交
+ * @function module:math.rectsIntersect
+ * @param {SVGRect} r1 - The first BBox-like object
+ * @param {SVGRect} r2 - The second BBox-like object
+ * @returns {boolean} True if rectangles intersect
+ */
+    static rectsIntersect = function (r1, r2) {
+        return r2.x < (r1.x + r1.width) &&
+            (r2.x + r2.width) > r1.x &&
+            r2.y < (r1.y + r1.height) &&
+            (r2.y + r2.height) > r1.y;
+    };
 }
 export default Methods;
