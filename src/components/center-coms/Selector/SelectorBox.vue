@@ -82,8 +82,8 @@
         style="cursor: sw-resize"
         stroke-width="2"
         pointer-events="all"
-        cx="217.5"
-        cy="253.203125"
+        :cx="boxInfo.sw[0]"
+        :cy="boxInfo.sw[1]"
       ></circle
       ><circle
         id="selectorGrip_resize_w"
@@ -102,19 +102,19 @@
         :x1="boxInfo.n[0]"
         :y1="boxInfo.n[1]"
         :x2="boxInfo.n[0]"
-        :y2="boxInfo.n[1]+20"
+        :y2="boxInfo.n[1]-15"
       ></line
-      ><circle
+       ><circle
         id="selectorGrip_rotate"
         fill="lime"
         r="4"
         stroke="#22C"
         stroke-width="2"
         style="cursor: url(images/rotate.png) 12 12, auto"
-        cx="347"
-        cy="95.203125"
-      >
-      </circle></g
+        :cx="boxInfo.n[0]"
+        :cy="boxInfo.n[1]-15"
+      
+      ></circle></g
   ></g>
 </template>
 <script>

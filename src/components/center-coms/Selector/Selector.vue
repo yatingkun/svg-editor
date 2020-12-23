@@ -48,7 +48,7 @@ export default {
       let selectorInfo = {
         id: bbox.id,
         display: "inline",
-        crDisplay: "none",
+        crDisplay: "inline",
         boxInfo: null,
       };
       let result = Methods.resize(bbox);
