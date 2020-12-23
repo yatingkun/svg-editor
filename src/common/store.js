@@ -26,7 +26,7 @@ const store = new Vuex.Store({
             state.model = Model.none;//设置模式为none
         },
         graphySelect(state, graphyType) {
-            state.model = Model.select
+            state.model = Model.painting;
             state.graphyType = graphyType;
         },
         addActiveVue(state, com) {
@@ -48,7 +48,7 @@ const store = new Vuex.Store({
             if (!state.graphyType)
                 return null;
             let current = state.activeVue.filter(vue => vue.type === state.graphyType);
-            if (current && state.model === Model.select) {
+            if (current && state.model === Model.painting) {
                 return current[0];
             }
             return null;

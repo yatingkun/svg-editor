@@ -44,7 +44,7 @@
           ref="svgComs"
         ></component>
       </g>
-      <selector-com></selector-com>
+      <selector-com ref="selector" :selectorBoxs="selectorBoxs"></selector-com>
     </svg>
   </svg>
 </template>
@@ -52,18 +52,18 @@
 import { mapState, mapGetters } from "vuex";
 import Model from "../../common/enum/model.js";
 import Methods from "../../common/Helper/Math.js";
-import Selector from './Selector/Selector.vue';
+import Selector from "./Selector/Selector.vue";
 export default {
   name: "svgroot-com",
   data() {
     return {
       activeComs: [], //界面画好的svg组件集合{id,com},搭配this.$refs可拿到具体的svg组件实例
-      currentId: "", //当前已挂载到dom上的vue实例的id
-      currentDomCom: null, //当前已挂载到dom上的vue实例
+      currentId: "", //当前已挂载到dom上的vue实例的id,通过这个id来操作当前dom对象和选择框的变化
+      selectorBoxs: [],
     };
   },
   components: {
-    "selector-com":Selector
+    "selector-com": Selector,
   },
   props: {
     root_w: {
@@ -94,29 +94,24 @@ export default {
   methods: {
     /**mousedown方法添加组件后，在this.nextTick()中去看this.$refs中的组件集合,发现新产生的组件也还没加进来，所以只能在updated()钩子方法中获取*/
     mousedown: function (evt) {
-      if (this.model === Model.select && this.currentVue) {
-        this.currentId = Methods.getUniqueId();
+      if (this.model === Model.painting && this.currentVue) {
+        let currentId = Methods.getUniqueId();
         let currentMyCom = {
-          id: this.currentId,
+          id: currentId,
           com: this.currentVue.com,
         }; //记录当前svg的构造器
         this.activeComs.push(currentMyCom); //此时界面会自动出现这个svg组件
         this.$nextTick(function () {
           //等dom完全挂载到界面上后，设置初始值
           setTimeout(() => {
-            let result = this.$refs.svgComs.some((svg) => {
-              if (svg.id === this.currentId) {
-                return (this.currentDomCom = svg);
-              }
-            });
-            if (this.currentDomCom && result) {
-              if (!Methods.checkMethods(this.currentDomCom, this.graphyType)) {//校验这个组件是否实现了所需要的方法
-                if (typeof this.currentIndex !== "undefined") {
-                  this.activeComs.splice(this.currentIndex, 1);
+            this.currentId = currentId;
+            if (this.currentId !== "") {
+              if (!Methods.checkMethods(this.currentDomCom, this.graphyType)) {
+                //校验这个组件是否实现了所需要的方法
+                if (this.domIndex >= 0) {
+                  this.activeComs.splice(this.domIndex, 1);
                 }
-                this.currentId = "";
-                this.currentDomCom = null;
-                this.$store.commit("setModel", Model.none);
+                this.init();
               } else {
                 const pt = Methods.getStartPosition(this.$refs["flag_g"], evt); //算出鼠标点击的地方相对于背景图的x,y
                 this.currentDomCom.initPosition(pt);
@@ -124,10 +119,20 @@ export default {
             }
           }, 10);
         });
+      } else if (this.model === Model.select) {
+        let result = this.$refs.svgComs.some((svg) => {
+          if (svg.id === evt.target.id) {
+            this.currentId = svg.id;
+            return true;
+          }
+        });
+        if (!result) {//鼠标的点击目标不是画布上的元素
+          this.currentId=""
+        }
       }
     },
     mousemove(evt) {
-      if (this.currentDomCom && this.currentVue) {
+      if (this.currentDomCom && this.model === Model.painting) {
         const pt = Methods.getStartPosition(this.$refs["flag_g"], evt); //算出鼠标点击的地方相对于背景图的x,y
         try {
           this.currentDomCom.mouseMove(pt);
@@ -140,15 +145,26 @@ export default {
       if (this.currentDomCom && this.currentVue) {
         try {
           if (this.currentDomCom.abledDelete()) {
-            if (typeof this.currentIndex !== "undefined") {
-              this.activeComs.splice(this.currentIndex, 1);
+            //符合删除条件
+            if (this.domIndex >= 0) {
+              this.activeComs.splice(this.domIndex, 1);
+            }
+            this.init();
+          } else {
+            let bbox = this.currentDomCom.getBBox(); //设置选择框.每个元素需要自己返回自己的width,height,x,y
+            if (bbox) {
+              this.$refs.selector.setSelector(bbox); //设置选择框
+              this.$store.commit("setModel", Model.select);
             }
           }
         } catch (ex) {
           console.log(`${this.graphyType}.vue的abledDelete()执行出错:${ex}`);
+          this.init();
         }
       }
-      this.currentDomCom = null;
+    },
+    /*回到初始状态 */
+    init() {
       this.currentId = "";
       this.$store.commit("setModel", Model.none);
     },
@@ -156,11 +172,42 @@ export default {
   computed: {
     ...mapState(["model", "graphyType"]), //根据activeVue[]和当前选中的graphyType,获取组件,并往activeComs[]即可
     ...mapGetters(["currentVue"]),
-    currentIndex: function () {
-        let index = this.activeComs.findIndex(
-          (m) => m.id === this.currentDomCom.id
-        ); 
-        return index;
+    domIndex: function () {
+      let index = this.activeComs.findIndex((m) => m.id === this.currentId);
+      return index;
+    },
+    currentDomCom: function () {
+      let dom = null;
+      if (!this.currentId) {
+        return dom;
+      } else {
+        if (this.$refs.svgComs) {
+          this.$refs.svgComs.some((svg) => {
+            if (svg.id === this.currentId) {
+              return (dom = svg);
+            }
+          });
+        }
+      }
+      return dom;
+    },
+  },
+  watch: {
+    /**model变成绘画状态时,需要将当前currentDomCom, currentId清空*/
+    model(value) {
+      if (value === Model.painting) {
+        this.currentId = "";
+        this.selectorBoxs.forEach((box) => {
+          box.display = "none";
+        });
+      }
+    },
+    currentId(val) {
+      if (this.model === Model.select) {
+        this.selectorBoxs.forEach((box) => {
+            box.display =box.id === val? "inline":"none";
+        });
+      }
     },
   },
 };

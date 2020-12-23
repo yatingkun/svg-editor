@@ -18,7 +18,7 @@ class Methods {
     }
     static checkMethods(vue, type) {
         let result = true;
-        const methodsName = ["initPosition", "abledDelete", "mouseMove"]
+        const methodsName = ["initPosition", "abledDelete", "mouseMove","getBBox"]
         methodsName.forEach(methodName => {
             if (!vue[methodName]) {
                 result = false;
@@ -76,5 +76,91 @@ class Methods {
             r2.y < (r1.y + r1.height) &&
             (r2.y + r2.height) > r1.y;
     };
+    static transformBox(l, t, w, h, m) {
+        const tl = Methods.transformPoint(l, t, m),
+          tr = Methods.transformPoint((l + w), t, m),
+          bl = Methods.transformPoint(l, (t + h), m),
+          br = Methods.transformPoint((l + w), (t + h), m),
+      
+          minx = Math.min(tl.x, tr.x, bl.x, br.x),
+          maxx = Math.max(tl.x, tr.x, bl.x, br.x),
+          miny = Math.min(tl.y, tr.y, bl.y, br.y),
+          maxy = Math.max(tl.y, tr.y, bl.y, br.y);
+      
+        return {
+          tl,
+          tr,
+          bl,
+          br,
+          aabox: {
+            x: minx,
+            y: miny,
+            width: (maxx - minx),
+            height: (maxy - miny)
+          }
+        };
+      }
+       /**
+     * Updates the selector to match the element's size.
+     * @param {module:utilities.BBoxObject} [bbox] - BBox to use for resize (prevents duplicate getBBox call).
+     * @returns {void}
+     */
+    static resize(bbox) {
+        const sw = bbox["stroke-width"] || 1,
+              currentZoom = 1;
+        let offset = 1;
+        const m = { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 };
+        offset += sw / 2;
+        m.e *= currentZoom;
+        m.f *= currentZoom;
+        offset *= currentZoom;
+        const l = bbox.x,
+          t = bbox.y,
+          w = bbox.width,
+          h = bbox.height;
+        const nbox = Methods.transformBox(
+            l * currentZoom,
+            t * currentZoom,
+            w * currentZoom,
+            h * currentZoom,
+            m
+          ),
+          { aabox } = nbox;
+        let nbax = aabox.x - offset,
+          nbay = aabox.y - offset,
+          nbaw = aabox.width + offset * 2,
+          nbah = aabox.height + offset * 2;
+  
+        const dstr =
+          "M" +
+          nbax +
+          "," +
+          nbay +
+          " L" +
+          (nbax + nbaw) +
+          "," +
+          nbay +
+          " " +
+          (nbax + nbaw) +
+          "," +
+          (nbay + nbah) +
+          " " +
+          nbax +
+          "," +
+          (nbay + nbah) +
+          "z";   
+        return {
+          dstr,
+          nw: [nbax, nbay],
+          ne: [nbax + nbaw, nbay],
+          sw: [nbax, nbay + nbah],
+          se: [nbax + nbaw, nbay + nbah],
+          n: [nbax + nbaw / 2, nbay],
+          w: [nbax, nbay + nbah / 2],
+          e: [nbax + nbaw, nbay + nbah / 2],
+          s: [nbax + nbaw / 2, nbay + nbah],
+        };
+      }
 }
+
 export default Methods;

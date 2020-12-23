@@ -42,17 +42,38 @@ export default {
     },
   },
   methods: {
+    /**
+     * @param {obj} pt -鼠标的当前位置
+     */
     initPosition(pt) {
       this.x = pt.x;
       this.y = pt.y;
     },
+    /**
+     * @returns {Boolean} 是否能删除
+     */
     abledDelete() {
       return this.width === 0 || this.height === 0;
     },
-    mouseMove(pt){
-      this.width=Math.abs(pt.x-this.x);
-      this.height=Math.abs(pt.y-this.y);
-    }
+    /**
+     * @param {Object} pt -鼠标的当前位置
+     */
+    mouseMove(pt) {
+      this.width = Math.abs(pt.x - this.x);
+      this.height = Math.abs(pt.y - this.y);
+    },
+    /**
+     * @returns {Object} 返回元素的宽高,x,y,id
+     */
+    getBBox() {
+      return {
+        id: this.id,
+        x: this.x,
+        y: this.y,
+        width: this.width,
+        height: this.height,
+      };
+    },
   },
   watch: {},
 };
