@@ -7,9 +7,9 @@
     :height="root_h"
     overflow="visible"
     style="display: block"
-    @mousedown="mousedown"
-    @mousemove="mousemove"
-    @mouseup="mouseup"
+    @mousedown.prevent="mousedown"
+    @mousemove.prevent="mousemove"
+    @mouseup.prevent="mouseup"
   >
     <defs></defs>
     <svg
@@ -60,6 +60,7 @@ export default {
       activeComs: [], //界面画好的svg组件集合{id,com},搭配this.$refs可拿到具体的svg组件实例
       currentId: "", //当前已挂载到dom上的vue实例的id,通过这个id来操作当前dom对象和选择框的变化
       selectorBoxs: [],
+      selectorGridId: ["n", "s", "w", "e", "sw", "se", "ne", "nw"],
     };
   },
   components: {
@@ -119,15 +120,24 @@ export default {
             }
           }, 10);
         });
-      } else if (this.model === Model.select) {
-        let result = this.$refs.svgComs.some((svg) => {
+      }
+      if (this.$refs.svgComs && this.model !== Model.painting) {
+        let id="";
+        this.$refs.svgComs.some((svg) => {
           if (svg.id === evt.target.id) {
-            this.currentId = svg.id;
+            id = svg.id;
+            this.$store.commit("setModel", Model.select); //鼠标点中画布上的元素进入选中模式
             return true;
           }
-        });
-        if (!result) {//鼠标的点击目标不是画布上的元素
-          this.currentId=""
+        });  
+        this.currentId = id;//鼠标的点击目标不是画布上的元素则id被清空
+      }
+      if (this.model === Model.select) {
+        if (this.selectorGridId.includes(evt.target.id.replace("selectorGrip_resize_", ""))) 
+        {
+          //鼠标放在了选择框的格子上
+          this.$store.commit("setModel", Model.resizing); //进入重绘模式
+          return;
         }
       }
     },
@@ -139,6 +149,9 @@ export default {
         } catch (ex) {
           console.log(`${this.graphyType}.vue的mouseMove()执行出错:${ex}`);
         }
+      }
+      if (this.model === Model.resizing) {
+        console.log(evt.target.id);
       }
     },
     mouseup() {
@@ -161,6 +174,9 @@ export default {
           console.log(`${this.graphyType}.vue的abledDelete()执行出错:${ex}`);
           this.init();
         }
+      }
+      if (this.model === Model.resizing) {
+        this.$store.commit("setModel", Model.select); //转回元素选中模式
       }
     },
     /*回到初始状态 */
@@ -205,8 +221,11 @@ export default {
     currentId(val) {
       if (this.model === Model.select) {
         this.selectorBoxs.forEach((box) => {
-            box.display =box.id === val? "inline":"none";
+          box.display = box.id === val ? "inline" : "none";
         });
+        if (!val) {
+          this.$store.commit("setModel", Model.none);
+        }
       }
     },
   },

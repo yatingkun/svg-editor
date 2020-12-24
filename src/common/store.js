@@ -33,7 +33,7 @@ const store = new Vuex.Store({
             state.activeVue.push(com);
         },
         setModel(state, model) {
-            state.model = model;
+            state.model = model;         
         }
     },
     actions: {
